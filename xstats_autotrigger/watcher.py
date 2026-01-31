@@ -83,6 +83,12 @@ class XMLWatcher(threading.Thread):
         self.state.processed_keys.add(key)
         logging.debug("New play detected: %s", key)
 
+        # Only trigger on made shots
+        action = p.get("action")
+        if action != "GOOD":
+            logging.debug("Skipping non-scoring play: action=%s", action)
+            return
+
         stat = self._canon(p.get("type"))
         vh = p.get("vh")
         uni = p.get("uni")
