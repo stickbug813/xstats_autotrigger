@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, Set, Tuple
+import logging
 
 SCORING_TYPES = {"3PTR", "2PTR", "FT"}
 TYPE_TO_DIGIT = {"3PTR": 3, "2PTR": 2, "FT": 1}
@@ -22,3 +23,14 @@ class EngineState:
     last_trigger_at: float = 0.0
     first_parse_done: bool = False
     startup_history_skipped: int = 0
+
+    def reset_runtime_state(self):
+        logging.info("Resetting runtime state - clearing %d processed plays", len(self.processed_keys))
+        self.processed_keys.clear()
+        self.burst_counts = {
+            "home": {"3PTR": 0, "2PTR": 0, "FT": 0},
+            "away": {"3PTR": 0, "2PTR": 0, "FT": 0},
+        }
+        self.last_player_trigger_at = 0.0
+        self.last_trigger_at = 0.0
+        self.first_parse_done = False

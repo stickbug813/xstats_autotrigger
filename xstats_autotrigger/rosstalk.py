@@ -11,6 +11,7 @@ class RossTalkClient:
 
     def send(self, command: str) -> bool:
         data = (command.strip() + "\r\n").encode("ascii", errors="ignore")
+        logging.debug("RossTalk → %s:%d: %s", self.host, self.port, command.strip())
         try:
             with self.lock:
                 with socket.create_connection((self.host, self.port), self.timeout) as s:
