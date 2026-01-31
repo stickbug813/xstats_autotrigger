@@ -37,6 +37,7 @@ class AppCfg:
     logging_level: str = "INFO"
     debounce_ms: int = 400
     min_trigger_interval_ms: int = 0
+    dry_run: bool = False
     player: PlayerCfg = field(default_factory=PlayerCfg)
     team_bursts: TeamBurstCfg = field(default_factory=TeamBurstCfg)
     types: TypesCfg = field(default_factory=TypesCfg)
@@ -92,6 +93,7 @@ def load_config(path: str) -> AppCfg:
         logging_level=logging_level,
         debounce_ms=raw.get("debounce_ms", 400),
         min_trigger_interval_ms=raw.get("min_trigger_interval_ms", 0),
+        dry_run=raw.get("dry_run", False),
         player=PlayerCfg(**player_cfg),
         team_bursts=TeamBurstCfg(**team_bursts),
         types=TypesCfg(**raw.get("types", {})),

@@ -34,20 +34,29 @@ def main():
     logging.info("Config: %s", args.config)
     logging.info("Logging level: %s", cfg.logging_level)
 
+    if cfg.dry_run:
+        logging.warning("=" * 60)
+        logging.warning("DRY RUN MODE ENABLED - No commands will be sent to XPression")
+        logging.warning("All RossTalk commands will be logged only")
+        logging.warning("=" * 60)
+
     # Validate stats XML file exists
     if not os.path.exists(cfg.stats_xml):
         logging.warning("Stats XML file does not exist yet: %s", cfg.stats_xml)
         logging.warning("Watcher will wait for file to be created...")
 
     # Initialize components
-    rt = RossTalkClient(cfg.xpression.host, cfg.xpression.port)
+    rt = RossTalkClient(cfg.xpression.host, cfg.xpression.port, dry_run=cfg.dry_run)
     logging.info("RossTalk target: %s:%d", cfg.xpression.host, cfg.xpression.port)
 
-    # Check XPression connectivity
-    if rt.healthy():
-        logging.info("XPression connection: OK")
+    # Check XPression connectivity (skipped in dry run mode)
+    if not cfg.dry_run:
+        if rt.healthy():
+            logging.info("XPression connection: OK")
+        else:
+            logging.warning("XPression connection: FAILED - check host/port and ensure XPression is running")
     else:
-        logging.warning("XPression connection: FAILED - check host/port and ensure XPression is running")
+        logging.info("XPression connection check skipped (dry run mode)")
 
     state = EngineState()
     watcher = XMLWatcher(cfg, rt, state)

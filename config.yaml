@@ -17,6 +17,10 @@ xpression:
 # ----------------
 logging_level: "INFO"
 
+# Dry run mode: log commands without sending to XPression
+# Set to true for testing/debugging without XPression running
+dry_run: false
+
 # Debounce to avoid mid-write XML truncation
 debounce_ms: 500
 
